@@ -697,6 +697,7 @@ class MysqlAdapter extends PdoAdapter
      */
     public function getPrimaryKey($tableName)
     {
+        $options = $this->getOptions();
         $rows = $this->fetchAll(sprintf(
             "SELECT
                 k.constraint_name,
@@ -705,7 +706,9 @@ class MysqlAdapter extends PdoAdapter
             JOIN information_schema.key_column_usage k
                 USING(constraint_name,table_name)
             WHERE t.constraint_type='PRIMARY KEY'
+                AND t.table_schema='%s'
                 AND t.table_name='%s'",
+            $options['name'],
             $tableName
         ));
 
